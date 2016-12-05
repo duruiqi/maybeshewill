@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.CompanyInfoMapper">
+
+	<insert id="saveEntry" parameterType="com.scxh.yhzm.po.FirmInfo">
+		insert into firmInfo (firmId,firmName,founds,loginFund,introduce,imagesAddr,firmAddr,beiAnInfo,state) 
+		values (#{firmId},#{firmName},#{founds},
+		#{loginFund},#{introduce},#{imagesAddr}
+		,#{firmAddr},#{beiAnInfo},#{state})
+	</insert>
+	
+	<select id="getAllEntry" parameterType="com.scxh.yhzm.po.FirmInfo" resultType="com.scxh.yhzm.po.FirmInfo">
+		select firmId,firmName,founds,loginFund,introduce,imagesAddr,firmAddr,beiAnInfo,state
+		from firmInfo 
+	</select>
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.FirmInfo">
+		select firmId,firmName,founds,loginFund,introduce,imagesAddr,firmAddr,beiAnInfo ,state
+		from firmInfo 
+		where firmId = #{firmId}
+	</select>
+	
+	<select id="getEntryByCoulmn" parameterType="com.scxh.yhzm.po.FirmInfo" resultType="com.scxh.yhzm.po.FirmInfo">
+		select firmId,firmName,founds,loginFund,introduce,imagesAddr,firmAddr,beiAnInfo,state
+		from firmInfo 
+		<where>
+			<trim prefixOverrides=",">
+				<if test="null!=state">
+					state=#{state}
+				</if>
+				<if test="null!=firmId">
+					,firmId=#{firmId}
+				</if>
+			</trim>
+		</where>
+	</select>
+	
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.FirmInfo" >
+		update firmInfo 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=firmName">
+					firmName=#{firmName}
+				</if>
+				<if test="null!=founds">
+					,founds=#{founds}
+				</if>
+				<if test="null!=loginFund">
+					,loginFund=#{loginFund}
+				</if>
+				<if test="null!=introduce">
+					,introduce=#{introduce}
+				</if>
+				<if test="null!=imagesAddr">
+					,imagesAddr=#{imagesAddr}
+				</if>
+				<if test="null!=firmAddr">
+					,firmAddr=#{firmAddr}
+				</if>
+				<if test="null!=beiAnInfo">
+					,beiAnInfo=#{beiAnInfo}
+				</if>
+				<if test="null!=state">
+					,state=#{state}
+				</if>
+			</trim>
+		</set>
+		<where>
+			<if test="null!=firmId">
+				firmId=#{firmId}
+			</if>
+		</where>
+	</update>
+	
+	<select id="selectImgList" resultType="string">
+		select imagesAddr from firmInfo 
+		where firmId in 
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+	
+	<delete id="deleteEntry">
+		delete from firmInfo where firmId in
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+</mapper>

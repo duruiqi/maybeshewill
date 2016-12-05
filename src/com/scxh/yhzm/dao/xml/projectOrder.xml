@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.ProjectOrderMapper">
+
+	<resultMap type="com.scxh.yhzm.po.Employee" id="empMapper">
+		<id property="eid" column="eid"/>
+	</resultMap>
+
+	<resultMap type="com.scxh.yhzm.po.ProjectOrder" id="pOrderMapper">
+		<id property="orderId" column="orderId"/>
+		<result property="projectName" column="projectName"/>
+		<result property="projectType" column="projectType"/>
+		<result property="projectAddr" column="projectAddr"/>
+		<result property="projectImg" column="projectImg"/>
+		<result property="projectPrice" column="projectPrice"/>
+		<result property="projectDetail" column="projectDetail"/>
+		<result property="startDate" column="startDate"/>
+		<result property="customerUnit" column="customerUnit"/>
+		<result property="endDate" column="endDate"/>
+		<association property="employee" resultMap="empMapper"/>
+	</resultMap>
+
+	<!-- id则必须要与调用的方法名保持一致 -->
+	<insert id="saveEntry" parameterType="com.scxh.yhzm.po.ProjectOrder" >
+		INSERT INTO projectOrder (orderId,projectName,projectType,projectAddr,projectImg
+		,projectPrice,projectDetail,startDate,endDate,eid,customerUnit)
+		VALUES(#{orderId},#{projectName},#{projectType},#{projectAddr}
+		,#{projectImg},#{projectPrice},#{projectDetail}
+		,#{startDate},#{endDate},#{employee.eid},#{customerUnit});
+	</insert>
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.ProjectOrder">
+		update projectOrder 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=projectName">
+					,projectName=#{projectName}
+				</if>
+				<if test="null!=projectAddr">
+					,projectAddr=#{projectAddr}
+				</if>
+				<if test="null!=projectImg">
+					,projectImg=#{projectImg}
+				</if>
+				<if test="null!=projectPrice">
+					,projectPrice=#{projectPrice}
+				</if>
+				<if test="null!=projectDetail">
+					,projectDetail=#{projectDetail}
+				</if>
+				<if test="null!=startDate">
+					,startDate=#{startDate}
+				</if>
+				<if test="null!=endDate">
+					,endDate=#{endDate}
+				</if>
+				<if test="null!=customerUnit">
+					,customerUnit=#{customerUnit}
+				</if>
+				<if test="null!=employee.eid">
+					,eid=#{employee.eid}
+				</if>
+			</trim>
+		</set>
+		where orderId=#{orderId}
+	</update>
+	
+	<select id="getALLEntryFY" parameterType="hashmap" resultMap="pOrderMapper">
+	
+		SELECT p.*,e.* FROM projectOrder p join employee e on e.eid = p.eid 
+			<trim prefixOverrides="AND/OR">
+				<if test="null!=orderId">
+					AND p.orderId=#{orderId} 
+				</if>
+				<if test="null!=projectName">
+					AND p.projectName=#{projectName} 
+				</if>
+				<if test="null!=projectType">
+					AND p.projectType=#{projectType} 
+				</if>
+				<if test="null!=projectAddr">
+					AND p.projectAddr=#{projectAddr} 
+				</if>
+				<if test="null!=startDate">
+					AND p.startDate=#{startDate} 
+				</if>
+				<if test="null!=endDate">
+					AND p.endDate=#{endDate} 
+				</if>
+				<if test="null!=eid">
+					AND p.eid=#{employee.eid} 
+				</if>
+				<if test="null!=customerUnit">
+					AND customerUnit=#{customerUnit} 
+				</if>
+			</trim>
+		order by endDate desc
+		<if test="null!=startIndex and null!=pageSize">
+			limit #{startIndex},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="selectCountEntry" resultType="integer">
+		select count(1) from projectOrder
+	</select>
+	
+	<select id="getEntryById" resultMap="pOrderMapper">
+		SELECT p.*,e.* 
+		FROM projectOrder p 
+		join employee e on e.eid = p.eid and p.orderId=#{orderId} 
+	</select>
+	
+	<select id="selectImgList" resultType="string">
+		select projectImg from projectOrder 
+		where orderId in 
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+	
+	<delete id="deleteEntry">
+		delete from projectOrder where orderId in 
+			<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+			</foreach>
+	</delete>
+</mapper>

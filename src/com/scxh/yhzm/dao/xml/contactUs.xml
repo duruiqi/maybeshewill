@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.ContactUsMapper">
+	<select id="getAllEntry" parameterType="com.scxh.yhzm.po.ContactUs" resultType="com.scxh.yhzm.po.ContactUs">
+		select usId,linkman,email,qq,fax,postcode,phone,linkAddr from contactUs
+	</select>
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.ContactUs">
+		select usId,linkman,email,qq,fax,postcode,phone,linkAddr 
+		from contactUs
+		where usId=#{usId}
+	</select>
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.ContactUs">
+		update contactUs 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=linkman">
+					linkman=#{linkman}
+				</if>
+				<if test="null!=email">
+					,email=#{email}
+				</if>
+				<if test="null!=qq">
+					,qq=#{qq}
+				</if>
+				<if test="null!=fax">
+					,fax=#{fax}
+				</if>
+				<if test="null!=postcode">
+					,postcode=#{postcode}
+				</if>
+				<if test="null!=phone">
+					,phone=#{phone}
+				</if>
+				<if test="null!=linkAddr">
+					,linkAddr=#{linkAddr}
+				</if>
+			</trim>
+		</set>
+		where usId=#{usId}
+	</update>
+</mapper>

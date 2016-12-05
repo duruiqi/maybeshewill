@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.scxh.yhzm.dao.mapper.DepartmentMapper">
+
+	
+	<delete id="delById">
+		delete from department where did=#{did}
+	</delete>
+	<insert id="addDepartment" parameterType="com.scxh.yhzm.po.Department">
+		INSERT INTO department (dname, principal, found) VALUES
+		( #{dname},
+		#{principal}, #{found})
+	</insert>
+
+	<update id="updateDepartment" parameterType="com.scxh.yhzm.po.Department">
+		update department
+		<trim prefix="set " suffixOverrides=",">
+			<if test="dname != null">
+				dname=#{dname},
+			</if>
+			<if test="principal != null">
+				principal=#{principal},
+			</if>
+			<if test="found != null">
+				FOUND=#{found},
+			</if>
+		</trim>
+		where did=#{dId}
+	</update>
+
+	<select id="getDepartmentById" resultType="com.scxh.yhzm.po.Department">
+		select * from department where did=#{did}
+	</select>
+
+	<select id="listAll" resultType="com.scxh.yhzm.po.Department">
+		select * from department
+	</select>
+	
+	<select id="getEntryByName" resultType="com.scxh.yhzm.po.Department">
+		select * from department where dname=#{dname}
+	</select>
+	
+</mapper>

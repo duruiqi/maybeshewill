@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.MainBannerMapper">
+
+	<select id="selectCountEntry" resultType="integer">
+		select count(1) from mainBanner
+	</select>
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.MainBanner">
+		select * from mainBanner where bId=#{bId}
+	</select>
+	
+	<insert id="saveEntry">
+		insert into mainBanner values(null,#{bannerImg},#{timeslice},#{state})
+	</insert>
+	
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.MainBanner">
+		update mainBanner 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=bannerImg">
+					bannerImg=#{bannerImg}
+				</if>
+				<if test="null!=state">
+					,state=#{state}
+				</if>
+				<if test="null!=timeslice">
+					,timeslice=#{timeslice}
+				</if>
+			</trim>
+			<where>
+				<if test="null!=bId">
+					bId=#{bId}
+				</if>
+			</where>
+		</set>
+	</update>
+	
+	<select id="getAllEntry" parameterType="com.scxh.yhzm.po.MainBanner" resultType="com.scxh.yhzm.po.MainBanner">
+		select * from mainBanner
+	</select>
+	
+	<select id="selectImgList" resultType="string">
+		select bannerImg from mainBanner 
+		where bId in 
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+	
+	<delete id="deleteEntry">
+		delete from mainBanner where bId in 
+			<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+			</foreach>
+	</delete>
+</mapper>

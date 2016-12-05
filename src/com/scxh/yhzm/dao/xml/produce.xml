@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.ProduceMapper">
+
+	<select id="selectCountEntry" resultType="integer">
+		select count(1) from produce
+	</select>
+	
+	<select id="getALLEntryFY" parameterType="hashmap" resultType="com.scxh.yhzm.po.Produce">
+		SELECT * FROM produce LIMIT 
+		<if test="null!=startIndex and null!=pageSize">
+			#{startIndex},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.Produce">
+		select * from produce where proId=#{proId}
+	</select>
+	<insert id="saveEntry">
+		insert into produce values(null,#{proName},#{proType},#{proImages},
+		#{proCatogroy},#{proMaterial},#{state},#{proArea}
+		,#{proSummary},#{proDesc},#{proParameter})
+	</insert>
+	
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.Produce">
+		update produce 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=proName">
+					proName=#{proName}
+				</if>
+				<if test="null!=proType">
+					,proType=#{proType}
+				</if>
+				<if test="null!=proImages">
+					,proImages=#{proImages}
+				</if>
+				<if test="null!=proCatogroy">
+					,proCatogroy=#{proCatogroy}
+				</if>
+				<if test="null!=proMaterial">
+					,proMaterial=#{proMaterial}
+				</if>
+				<if test="null!=proArea">
+					,proArea=#{proArea}
+				</if>
+				<if test="null!=proSummary">
+					,proSummary=#{proSummary}
+				</if>
+				<if test="null!=proDesc">
+					,proDesc=#{proDesc}
+				</if>
+				<if test="null!=proParameter">
+					,proParameter=#{proParameter}
+				</if>
+				<if test="null!=state">
+					,state=#{state}
+				</if>
+			</trim>
+			where proId=#{proId}
+		</set>
+	</update>
+	
+	<select id="selectImgList" resultType="string">
+		select proImages from produce 
+		where proId in 
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+	
+	<delete id="deleteEntry">
+		delete from produce where proId in 
+			<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+			</foreach>
+	</delete>
+	
+</mapper>

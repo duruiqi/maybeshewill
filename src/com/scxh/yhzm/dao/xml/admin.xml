@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.AdminMapper">
+	<!-- id则必须要与调用的方法名保持一致 -->
+	<select id="adminLogin" parameterType="com.scxh.yhzm.po.Admin" resultType="com.scxh.yhzm.po.Admin">
+		select adminName,adminId,adminPasswd from tb_admin 
+		<where>
+			<trim prefixOverrides="AND">
+				<if test="null!=adminName">
+					and adminName=#{adminName}
+				</if>
+				<if test="null!=adminPasswd">
+					and adminPasswd=#{adminPasswd}
+				</if>
+			</trim>
+			and state = 1
+		</where>			 
+	</select>
+	
+	<update id="alterPasswd" parameterType="com.scxh.yhzm.po.Admin">
+		update tb_admin set adminPasswd=#{adminPasswd} where adminId=#{adminId}
+	</update>
+</mapper>

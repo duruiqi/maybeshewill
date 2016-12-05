@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.MapMapper">
+
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.OnlineMap">
+		select mapId,markerTitle,markerContent,latitude,longitude,markerArea 
+		from tb_map
+		where mapId=#{mapId}
+	</select>
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.OnlineMap">
+		update tb_map
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=markerTitle">
+					markerTitle=#{markerTitle}
+				</if>
+				<if test="null!=markerContent">
+					,markerContent=#{markerContent}
+				</if>
+				<if test="null!=latitude">
+					,latitude=#{latitude}
+				</if>
+				<if test="null!=longitude">
+					,longitude=#{longitude}
+				</if>
+				<if test="null!=markerArea">
+					,markerArea=#{markerArea}
+				</if>
+			</trim>
+		</set>
+		where mapId=#{mapId}
+	</update>
+</mapper>

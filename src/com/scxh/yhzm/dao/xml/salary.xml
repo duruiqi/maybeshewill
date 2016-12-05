@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.SalaryMapper">
+
+<resultMap type="com.scxh.yhzm.po.Employee" id="empmap">
+	<id property="eid" column="eid"/>
+</resultMap>
+
+	<!-- CREATE TABLE `salary` (
+   `sid` int(11) NOT NULL auto_increment,
+   `sBase` double(12,2) default NULL,
+   `sCount` double(12,2) default NULL,
+   `sBusiness` double(12,2) default NULL,
+   `eid` int(11) default NULL,
+   PRIMARY KEY  (`sid`),
+   KEY `sala_fk_eid` (`eid`),
+   CONSTRAINT `sala_fk_eid` FOREIGN KEY (`eid`) REFERENCES `employee` (`eid`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+ 	 -->
+
+
+<resultMap type="com.scxh.yhzm.po.Salary" id="salarymap">
+<id column="sid" property="sid"/>
+<result column="sBase" property="sBase" />
+<result column="sCount" property="sCount"/>
+<result column="sBusiness" property="sBusiness"/>
+<!-- 外键。 -->
+<association property="employee" resultMap="empmap"></association>
+</resultMap>
+
+	<select id="getSalaryList" resultType="com.scxh.yhzm.po.Salary">
+	select * from salary
+	</select>
+	
+	<select id="selectCountEntry" resultType="integer">
+		select count(1) from salary
+	</select>
+	
+	<select id="getALLEntryFY" parameterType="hashmap" resultMap="salarymap">
+		SELECT * FROM salary
+		<trim prefixOverrides="AND/OR">
+
+			<if test="sid != null">
+				sid=#{sid},
+			</if>
+		
+			<if test="sBase != null">
+				sBase=#{sBase},
+			</if>
+		
+			<if test="sCount != null">
+				sCount=#{sCount},
+			</if>
+		
+			<if test="sBusiness != null">
+				sBusiness=#{sBusiness},
+			</if>
+			
+			<if test="eid != null">
+				eid=eid,
+			</if>
+		</trim>
+		 LIMIT 
+		<if test="null!=startIndex and null!=pageSize">
+			#{startIndex},#{pageSize}
+		</if>
+	</select>
+	
+
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.Salary">
+		select * from salary where sid=#{sid}
+	</select>
+	
+	<insert id="saveEntry">
+		insert into salary values(#{sid},#{sBase},#{sCount},
+		#{eid})
+	</insert>
+	
+
+	
+	<update id="updateEntry" parameterType="map">
+		update salary 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=sBase">
+					sBase=#{sBase}
+				</if>
+				<if test="null!=sCount">
+					,sCount=#{sCount}
+				</if>
+				<if test="null!=sBusiness">
+					,sBusiness=#{sBusiness}
+				</if>
+				<if test="employee.eid!= null">
+				eid=#{employee.eid},
+				</if>
+			</trim>
+			where sid=#{sid}
+		</set>
+	</update>
+	
+	
+	<delete id="deleteEntry">
+		delete from Salary where sid in 
+			<foreach collection="array" open="(" separator="," close=")" item="sid">
+			#{sid}
+			</foreach>
+	</delete>
+	
+</mapper>

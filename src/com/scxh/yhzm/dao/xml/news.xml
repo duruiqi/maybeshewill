@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.NewsMapper">
+
+	<select id="selectCountEntry" resultType="integer">
+		select count(1) from news
+	</select>
+	
+	<select id="getALLEntryFY" parameterType="hashmap" resultType="com.scxh.yhzm.po.News">
+		SELECT * FROM news LIMIT 
+		<if test="null!=startIndex and null!=pageSize">
+			#{startIndex},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.News">
+		select * from news where nid=#{nid}
+	</select>
+	
+	<insert id="saveEntry">
+		insert into news values(#{nid},#{nTitle},#{nImages},#{nContent},
+		#{nDate},#{customerUnit},#{state})
+	</insert>
+	
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.News">
+		update news 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=nTitle">
+					nTitle=#{nTitle}
+				</if>
+				<if test="null!=nImages">
+					,nImages=#{nImages}
+				</if>
+				<if test="null!=nContent">
+					,nContent=#{nContent}
+				</if>
+				<if test="null!=nDate">
+					,nDate=#{nDate}
+				</if>
+				<if test="null!=state">
+					,state=#{state}
+				</if>
+				<if test="null!=customerUnit">
+					,customerUnit=#{customerUnit}
+				</if>
+			</trim>
+			where nid=#{nid}
+		</set>
+	</update>
+	
+	<select id="selectImgList" resultType="string">
+		select nImages from news 
+		where nid in 
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</select>
+	
+	<delete id="deleteEntry">
+		delete from news where nid in 
+			<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+			</foreach>
+	</delete>
+	
+</mapper>

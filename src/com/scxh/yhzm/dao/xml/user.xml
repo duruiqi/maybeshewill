@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.UserMapper">
+	<!-- id则必须要与调用的方法名保持一致 -->
+	<select id="getEntryByCoulmn" resultType="com.scxh.yhzm.po.User">
+		SELECT userId,userName,email,state
+		FROM tb_user 
+		<where>
+			<trim prefixOverrides="OR">
+				<if test="null!=state">
+					OR state=#{state}
+				</if>
+				<if test="null!=userName">
+					OR userName=#{userName}
+				</if>
+				<if test="null!=email">
+					OR email=#{email}
+				</if>
+				<if test="null!=stateCode">
+					OR stateCode=#{stateCode}
+				</if>
+			</trim>
+		</where>
+	</select>
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.User">
+		select userId,userName,userPasswd,stateCode,email,state,loginState,remark,delMark 
+		from tb_user where userId=#{userId}
+	</select>
+	
+	<insert id="saveEntry" parameterType="com.scxh.yhzm.po.User">
+		INSERT INTO tb_user (userId,userName,userPasswd,stateCode,email,state,loginState,remark,delMark)
+		VALUES (#{userId},#{userName},#{userPasswd},
+				#{stateCode},#{email},#{state},
+				#{loginState},#{remark},#{delMark})
+	</insert>
+	
+	<update id="updateUserState" parameterType="com.scxh.yhzm.po.User">
+		UPDATE tb_user SET state=#{state} WHERE userId=#{userId}
+	</update>
+	
+	<select id="selectOneUser" parameterType="com.scxh.yhzm.po.User" resultType="com.scxh.yhzm.po.User">
+		SELECT userName,userId
+		FROM tb_user
+		WHERE userName=#{userName} AND userPasswd=#{userPasswd} AND state = '1'
+	</select>
+	
+	<update id="updateLoginState" parameterType="com.scxh.yhzm.po.User">
+		UPDATE tb_user SET loginState=#{loginState} WHERE userId=#{userId}
+	</update>
+	
+	<select id="selectCountEntry" parameterType="hashmap" resultType="integer">
+		select count(1) from tb_user
+				<trim prefix="where" prefixOverrides="AND">
+					<if test="null!=userName">
+						AND userName like #{userName}
+					</if>
+					<if test="null!=remark">
+						AND remark like #{remark}
+					</if>
+					<if test="null!=loginState">
+						AND loginState like #{loginState}
+					</if>
+					<if test="null!=state">
+						AND state like #{state}
+					</if>
+				</trim>
+	</select>
+	
+	<select id="getALLEntryFY" parameterType="hashmap" resultType="com.scxh.yhzm.po.User">
+		SELECT userId,userName,userPasswd,stateCode,email,state,loginState,remark,delMark 
+		FROM tb_user 
+		<where>
+			<trim prefixOverrides="AND">
+				delMark = '0' 
+				<if test="null!=userName">
+					AND userName like #{userName}
+				</if>
+				<if test="null!=remark">
+					AND remark like #{remark}
+				</if>
+				<if test="null!=loginState">
+					AND loginState = #{loginState}
+				</if>
+				<if test="null!=state">
+					AND state = #{state}
+				</if>
+			</trim>
+		</where>
+		LIMIT 
+		<if test="null!=startIndex and null!=pageSize">
+			#{startIndex},#{pageSize}
+		</if>
+	</select>
+	
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.User">
+		update tb_user 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=userName">
+					userName=#{userName}
+				</if>
+				<if test="null!=userPasswd">
+					userPasswd=#{userPasswd}
+				</if>
+				
+				<if test="null!=stateCode">
+					stateCode=#{stateCode}
+				</if>
+				
+				<if test="null!=state">
+					state=#{state}
+				</if>
+				<if test="null!=loginState">
+					loginState=#{loginState}
+				</if>
+				<if test="null!=remark">
+					remark=#{remark}
+				</if>
+				<if test="null!=delMark">
+					delMark=#{delMark}
+				</if>
+			</trim>
+		</set> 
+		where userId = #{userId}
+	</update>
+</mapper>

@@ -1,0 +1,243 @@
+﻿@charset "utf-8";
+/* CSS Document */
+body,div,ul,li,ol,h1,h2,h3,h4,h5,h6,p,dl,dd,dt {
+	padding: 0px;
+	margin: 0px;
+}
+
+img {
+	border: none;
+	height: auto;
+}
+
+body {
+	font-family: Verdana, Arial, Helv, Helvetica, sans-serif '微软雅黑';
+	color: #555;
+	height: auto;
+	min-width: 640px;
+	max-width: 100%;
+	font-size: 12px;
+}
+
+a {
+	text-decoration: none;
+	color: #fff;
+}
+
+li {
+	list-style: none;
+	font-family: Verdana, Arial, Helv, Helvetica, sans-serif '微软雅黑';
+}
+
+input {
+	border: none;
+}
+
+/*---app---*/
+#logo {
+	width: 920px;
+	margin: 10px auto;
+	background:#0174C7;
+	overflow: hidden;
+	height: 70px;
+}
+
+.logo_span {
+	font-size: 20+px;
+	font-weight: 300;
+	color: #fff;
+	border-left: 1px dashed #ffffff;
+	height: 30px;
+	line-height: 30px;
+	float: left;
+	margin: 7px 0 0 10px;
+	padding-left: 10px;
+}
+
+h1 {
+	float: left;
+	margin-top: 15px;
+}
+
+.zi {
+	font-size: 16px;
+	padding-right: 20px;
+	line-height: 75px;
+}
+
+#logo_right {
+	float: right;
+	position: relative;
+	height: 58px;
+}
+
+#nav_body,#footer_body {
+	width: 1140px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+.nav_bg,#nav_body li a:hover {
+	background: #1672C5;
+}
+
+.left {
+	float: left;
+}
+
+#footer {
+	background: url(../images/img13.png) repeat-x;
+	padding: 30px 0;
+	line-height: 25px;
+	background-color: #E6E6E6;
+}
+
+.footer_left {
+	float: left;
+	width: 500px;
+	margin-left: 50px;
+}
+
+.footer_right {
+	float: right;
+	margin-right: 50px;
+}
+
+.zhuce_body {
+	background: #fff;
+	-webkit-box-shadow: 0px 0px 5px #C6C6C6;
+	-moz-box-shadow: 0px 0px 5px #C6C6C6;
+	width: 80%;
+	margin: 20px auto;
+	padding: 20px;
+	overflow: hidden;
+}
+
+.zhuce_left {
+	float: left;
+	width: 800px;
+	border-right: 1px solid #EBEBEB;
+	padding: 30px 0;
+}
+
+.form .input {
+	margin: 15px 0;
+}
+.input{height:55px;}
+.input label {
+	width:150px;
+	display: block;
+	float: left;
+	font-size: 16px;
+	text-align: left;
+	height: 30px;
+	margin-top: 10px;
+	padding-right: 10px;
+}
+
+.input .yanzheng {
+	width: 100px;
+	height: 30px;
+}
+.input .text {
+	width: 246px;
+	height: 30px;
+}
+
+.input .text,.input .yanzheng {
+	border: 1px solid #ccc;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 0 12px;
+	line-height: 30px;
+	margin-top: 10px;
+	font-size: 10px;
+	-webkit-box-shadow: 0 0 2px #cccccc inset;
+	-moz-box-shadow: 0 0 2px #cccccc inset;
+	box-shadow: 0 0 2px #cccccc inset;
+	-moz-transition: all 0.3s ease-in-out;
+	-webkit-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+}
+
+.input .text:focus,.input .yanzheng:focus {
+	border: 1px solid #2EA7E0;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 0 12px;
+	line-height: 30px;
+	font-size: 14px;
+	-webkit-box-shadow: 0 0 2px #2EA7E0 inset;
+	-moz-box-shadow: 0 0 2px #2EA7E0 inset;
+	box-shadow: 0 0 2px #2EA7E0 inset;
+	-moz-transition: all 0.3s ease-in-out;
+	-webkit-transition: all 0.3s ease-in-out;
+	-o-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+	outline: none;
+	-webkit-box-shadow: 0px 0px 7px #7ED6FF;
+	-moz-box-shadow: 0px 0px 7px #7ED6FF;
+}
+
+
+
+
+
+
+
+
+
+.zhuce_a {
+	color: #00F
+}
+
+.input .button {
+	cursor: pointer;
+	color: #fff;
+	background: #1C89ED;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	width: 200px;
+	height: 40px;
+	font-size: 18px;
+	font-weight: bold;
+	margin-top: 20px;
+	display: block;
+	text-align: center;
+	line-height: 40px;
+	margin-left: 150px;
+}
+
+.input .button:hover,.input .button:focus,.denglu .zhuce_denglu:hover {
+	background: #319BFA;
+	outline: none;
+}
+
+.zhuce_right {
+	float: right;
+	width: auto;
+	margin-right: 20px;
+}
+
+.denglu {
+	border-bottom: 1px solid #EBEBEB;
+	padding: 20px 10px;
+	overflow: hidden;
+	font-size: 16px;
+}
+
+.denglu .zhuce_denglu {
+	display: block;
+	padding: 5px 10px;
+	color: #FFF;
+	background: #1C89ED;
+	float: left;
+	margin-left: 10px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}

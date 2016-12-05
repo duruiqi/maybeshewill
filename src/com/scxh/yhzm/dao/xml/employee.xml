@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.EmployeeMapper">
+
+	<resultMap id="deptMapper" type="com.scxh.yhzm.po.Department">
+		<id property="dId" column="did"/>
+	</resultMap>
+	
+	<resultMap type="com.scxh.yhzm.po.Employee" id="empMapper">
+		<id property="eid" column="eid"/>
+		<result property="ename" column="ename"/>
+		<result property="mgr" column="mgr"/>
+		<result property="hiredate" column="hiredate"/>
+		<result property="gender" column="gender"/>
+		<result property="birthday" column="birthday"/>
+		<result property="phone" column="phone"/>
+		<result property="qq" column="qq"/>
+		<result property="education" column="education"/>
+		<result property="email" column="email"/>
+		<result property="job" column="job"/>
+		<association property="department" resultMap="deptMapper"/>
+	</resultMap>
+
+
+<!-- 这里我压根不知道为什么会这样 by霍平宏 虽然配置大部分是我写的。。。但是部门表为什么跑过来了我真的不清楚 担心会影响 其他表所以就先放着了 -->
+	<delete id="delById">
+		delete from department where did=#{did}
+	</delete>
+	<insert id="addDepartment" parameterType="com.scxh.yhzm.po.Department">
+		INSERT INTO department
+		(dname, principal, found) VALUES
+		( #{dname},
+		#{principal}, #{found})
+	</insert>
+
+	<update id="updateDepartment" parameterType="com.scxh.yhzm.po.Department">
+		update department
+		<trim prefix="set " suffixOverrides=",">
+			<if test="dname != null">
+				dname=#{dname},
+			</if>
+			<if test="principal != null">
+				principal=#{principal},
+			</if>
+			<if test="found != null">
+				FOUND=#{found},
+			</if>
+		</trim>
+		where did=#{dId}
+	</update>
+
+	<select id="getDepartmentById" resultType="com.scxh.yhzm.po.Department">
+		select * from
+		department where did=#{did}
+	</select>
+
+	<select id="listAll" resultType="com.scxh.yhzm.po.Department">
+		select * from department
+	</select>
+	
+	
+	
+	<!-- 这里开始就是正式的emp表部分 -->
+	
+	<select id="getSsEmployee" resultMap="empMapper">
+		select eid,ename,job,phone from employee where job in
+		<foreach collection="array" open="(" item="jobName" close=")" separator=",">
+			#{jobName}
+		</foreach>
+	</select>
+	
+	<select id="getALLEntryFY" parameterType="hashmap" resultMap="empMapper">
+		SELECT * FROM employee 
+			<trim prefixOverrides="AND/OR">
+			<if test="ename != null">
+				ename=#{ename},
+			</if>
+			<if test="mgr != null">
+				mgr=#{mgr},
+			</if>
+			<if test="hiredate != null">
+				hiredate=#{hiredate},
+			</if>
+			<if test="gender != null">
+				gender=#{gender},
+			</if>
+			<if test="birthday != null">
+				birthday=#{birthday},
+			</if>
+			<if test="phone != null">
+				phone=#{phone},
+			</if>
+			<if test="qq != null">
+				qq=#{qq},
+			</if>
+			<if test="education != null">
+				education=#{education},
+			</if>
+			<if test="email != null">
+				email=#{email},
+			</if>
+			<if test="job != null">
+				job=#{job},
+			</if>
+			<if test="did != null">
+				did=#{did},
+			</if>
+			</trim>
+		order by eid 
+		<if test="null!=startIndex and null!=pageSize">
+			limit #{startIndex},#{pageSize}
+		</if>
+	</select>
+	
+	
+	<select id="getEntryByName" resultType="com.scxh.yhzm.po.Employee">
+		select ename,eid,mgr,hiredate,birthday,phone,qq,education,email,job,did from employee where ename=#{ename}
+	</select>
+	
+	<select id="getEntryById" resultType="com.scxh.yhzm.po.Employee">
+		select * from employee where eid=#{eid}
+	</select>
+	
+	<select id="getEmployeeByDid" resultType="com.scxh.yhzm.po.Employee">
+		select eid,ename,gender,hiredate,phone from employee where dId=#{did}
+	</select>
+	
+	<delete id="deleteEntry">
+		DELETE FROM employee where eid =
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+		#{id}
+		</foreach>
+	</delete>
+	
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.Employee">
+			update employee
+		<trim prefix="set " suffixOverrides=",">
+			<if test="ename != null">
+				ename=#{ename},
+			</if>
+			<if test="mgr != null">
+				mgr=#{mgr},
+			</if>
+			<if test="gender!= null">
+				gender=#{gender},
+			</if>
+			<if test="hiredate != null">
+				hiredate=#{hiredate},
+			</if>
+			<if test="birthday != null">
+				birthday=#{birthday},
+			</if>
+			<if test="phone != null">
+				phone=#{phone},
+			</if>
+			<if test="qq != null">
+				qq=#{qq},
+			</if>
+			<if test="education != null">
+				education=#{education},
+			</if>
+			<if test="email != null">
+				email=#{email},
+			</if>
+			<if test="job != null">
+				job=#{job},
+			</if>
+			<if test="department.dId != null">
+				did=#{department.dId},
+			</if>						
+		</trim>
+		where eid=#{eid}
+	</update>
+	
+	
+	<insert id="saveEntry">
+		insert into employee
+		<trim prefix="set " suffixOverrides=",">
+			<if test="ename != null">
+				ename=#{ename},
+			</if>
+			<if test="mgr != null">
+				mgr=#{mgr},
+			</if>
+			<if test="gender!= null">
+				gender=#{gender},
+			</if>
+			<if test="hiredate != null">
+				hiredate=#{hiredate},
+			</if>
+			<if test="birthday != null">
+				birthday=#{birthday},
+			</if>
+			<if test="phone != null">
+				phone=#{phone},
+			</if>
+			<if test="qq != null">
+				qq=#{qq},
+			</if>
+			<if test="education != null">
+				education=#{education},
+			</if>
+			<if test="email != null">
+				email=#{email},
+			</if>
+			<if test="job != null">
+				job=#{job},
+			</if>
+			<if test="department.dId != null">
+				did=#{department.dId},
+			</if>						
+		</trim>
+	</insert>
+	
+	<select id="selectCountEntry" resultType="integer">
+		select count(1) from employee
+	</select>
+	
+   <select id="getAllEmployee" parameterType="hashmap" resultMap="empMapper">
+		SELECT * FROM employee 
+			<trim prefixOverrides="AND/OR">
+			<if test="ename != null">
+				ename=#{ename},
+			</if>
+			<if test="mgr != null">
+				mgr=#{mgr},
+			</if>
+			<if test="hiredate != null">
+				hiredate=#{hiredate},
+			</if>
+			<if test="gender != null">
+				gender=#{gender},
+			</if>
+			<if test="birthday != null">
+				birthday=#{birthday},
+			</if>
+			<if test="phone != null">
+				phone=#{phone},
+			</if>
+			<if test="qq != null">
+				qq=#{qq},
+			</if>
+			<if test="education != null">
+				education=#{education},
+			</if>
+			<if test="email != null">
+				email=#{email},
+			</if>
+			<if test="job != null">
+				job=#{job},
+			</if>
+			<if test="did != null">
+				did=#{did},
+			</if>
+			</trim>
+	</select>
+	
+	
+	
+</mapper>

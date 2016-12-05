@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd  
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd  
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+            http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+	<!-- 支持配置中的符号替换 -->
+	<context:component-scan base-package="com.scxh.yhzm.test"></context:component-scan>
+	<context:property-placeholder location="classpath:*.properties"/> 
+<!--     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations">
+    		<list>
+    			<value>classpath:db.properties</value>
+    			<value>classpath:mail.properties</value>
+    		</list>
+    	</property>
+    </bean> -->
+	<!-- 由连接池C3P0提供的数据源 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="autoCommitOnClose" value="true"/>
+		<property name="checkoutTimeout" value="${cpool.checkoutTimeout}"/>
+		<property name="initialPoolSize" value="${cpool.minPoolSize}"/>
+		<property name="minPoolSize" value="${cpool.minPoolSize}"/>
+		<property name="maxPoolSize" value="${cpool.maxPoolSize}"/>
+		<property name="maxIdleTime" value="${cpool.maxIdleTime}"/>
+		<property name="acquireIncrement" value="${cpool.acquireIncrement}"/>
+		<property name="maxIdleTimeExcessConnections" value="${cpool.maxIdleTimeExcessConnections}"/>
+	</bean>
+	
+	<!-- 配置sqlSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:Configuration.xml"/>
+		<property name="dataSource" ref="dataSource"/>
+		<property name="mapperLocations" value="classpath:com/scxh/yhzm/dao/xml/**/*.xml"/>
+	</bean>
+	<!-- 自动递归扫描指定的基础包下的映射器接口 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<property name="basePackage" value="com.scxh.yhzm.dao.mapper"/>
+	</bean>
+	
+	
+	<!-- 配置事务管理器 -->
+	<!-- Spring的JDBC事务管理器(充当AOP切面) --> 
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- 配置事务增强 -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="add*" propagation="REQUIRED"/>
+			<tx:method name="del*" propagation="REQUIRED"/>
+			<tx:method name="mod*" propagation="REQUIRED"/>
+			<tx:method name="list*" propagation="REQUIRED"/>
+			<tx:method name="update*" propagation="REQUIRED"/>
+			<tx:method name="*" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 配置切面的切入点 -->
+	<aop:config>
+		<aop:pointcut expression="execution(* com.scxh.yhzm.service.impl.*.*(..))" id="pt"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="pt"/>
+	</aop:config>
+	
+	<!-- 定义dao实现则为之提供了操作数据库的工具类sqlSessionTemplate 执行数据库的 增删改查-->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="executorType" value="SIMPLE"/>
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+	
+		<!-- 文件上传支持:如果要使用SpringMVC来完成文件上传(走DispatcherServlet路径)则下面这个Bean必须配置 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+        <property name="defaultEncoding" value="UTF-8"></property>   
+        <property name="maxUploadSize" value="1048576000"></property>  
+        <property name="maxInMemorySize" value="40960"></property>  
+   </bean>  
+    
+    	<!-- 邮件发送器 163  --> 
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="${mail.host}" /> 
+        <property name="username" value="${mail.username}" />  
+        <property name="password" value="${mail.password}" />  
+        <property name="defaultEncoding" value="${mail.defaultEncoding}"/>
+        <property name="javaMailProperties">  
+            <props>  
+                <prop key="mail.smtp.auth">${mail.smtp.auth}</prop>  
+                <prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>  
+            </props>  
+        </property>
+    </bean> 
+    
+	<import resource="./beans-action.xml"/>
+</beans>

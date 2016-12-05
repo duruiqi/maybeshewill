@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间必须以映射器接口的全接口名来书写 -->
+<mapper namespace="com.scxh.yhzm.dao.mapper.LogisticsMapper">
+
+	<resultMap type="com.scxh.yhzm.po.Department" id="deptMapper">
+		<id property="dId" column="did"/>
+		<result property="dname" column="dname"/>
+	</resultMap>
+	
+	<resultMap type="com.scxh.yhzm.po.Purchase" id="purchaseMapper">
+		<id property="purId" column="purId"/>
+		<result property="materialName" column="materialName"/>
+		<result property="materialType" column="materialType"/>
+		<result property="purCount" column="purCount"/>
+		<result property="purPrice" column="purPrice"/>
+		<result property="isPay" column="isPay"/>
+		<result property="payMethod" column="payMethod"/>
+		<result property="purDate" column="purDate"/>
+		<association property="department" resultMap="deptMapper"/>
+	</resultMap>
+	
+	
+	<insert id="saveEntry" parameterType="com.scxh.yhzm.po.Purchase">
+		insert into purchase 
+		(purId,materialName,materialType,purCount,purPrice,isPay,payMethod,purDate,did) 
+		values (#{purId},#{materialName},#{materialType},#{purCount}
+		,#{purPrice},#{isPay},#{payMethod},#{purDate},#{department.dId});
+		
+	</insert>
+	
+	<select id="selectCountEntry" resultType="integer">
+		select count(1) from purchase
+	</select>
+	
+	<select id="getALLEntryFY" parameterType="hashmap" resultMap="purchaseMapper">
+		select p.*,d.* 
+		from purchase p left join department d
+		on p.did=d.did
+		order by purDate desc 
+		<if test="null!=startIndex and null!=pageSize">
+			limit #{startIndex},#{pageSize}
+		</if>
+	</select>
+	
+	<select id="getEntryById" resultMap="purchaseMapper">
+		select p.*,d.*
+		from purchase p join department d
+		on p.purId=#{purId} and p.did = d.did
+	</select>
+	
+	<update id="updateEntry" parameterType="com.scxh.yhzm.po.Purchase">
+		update purchase 
+		<set>
+			<trim prefixOverrides=",">
+				<if test="null!=materialName">
+					materialName=#{materialName}
+				</if>
+				
+				<if test="null!=materialType">
+					,materialType=#{materialType}
+				</if>
+				
+				<if test="null!=purCount">
+					,purCount=#{purCount}
+				</if>
+				
+				<if test="null!=purPrice">
+					,purPrice=#{purPrice}
+				</if>
+				
+				<if test="null!=isPay">
+					,isPay=#{isPay}
+				</if>
+				
+				<if test="null!=payMethod">
+					,payMethod=#{payMethod}
+				</if>
+				
+				<if test="null!=purDate">
+					,purDate=#{purDate}
+				</if>
+				
+				<if test="null!=department.dId">
+					,did=#{department.dId}
+				</if>
+				
+			</trim>
+			where purId=#{purId}
+		</set>	
+	</update>
+	
+	<delete id="deleteEntry">
+		delete from purchase 
+		where purId in
+		<foreach collection="array" open="(" separator="," close=")" item="id">
+			#{id}
+		</foreach>
+	</delete>
+</mapper>
