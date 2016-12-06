@@ -1,10 +1,14 @@
 # maybeshewill
 
-毕设项目。开发工具为eclipse/myeclipse 项目名称为YHZM  为两个人合作完成的。不管怎么样先扔上来吧
+毕设项目。开发工具为eclipse/myeclipse 项目名称为YHZM  为两个人合作完成的。不管怎么样先扔上来吧  
 
-架构用的springmvc+mybatis+jquery 数据库用的mysql。前端为用的某ui设计网站上的免费的模版。水平尚浅  且看且珍惜勿喷。
+架构用的springmvc+mybatis+jquery 数据库用的mysql。前端为用的某ui设计网站上的免费的模版。水平尚浅  如果可以请多多指教。数据库文件为yhzm.sql   
 
-需要的jar包
+后台登录页面地址为localhost:8080/YHZM/backPage/login.jsp 登录名 admin/admin  
+
+前台登录页面地址为localhost:8080/YHZM/frontPage/index.jsp
+
+因为当时没有用maven管理jar包  jar包都是直接放webroot/webinfo/bin下面的jar包数量较多  提交会很麻烦所以就去掉jar包提交了。需要的jar包列表如下。
 
 activation.jar  
 
